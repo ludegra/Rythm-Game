@@ -1,6 +1,6 @@
 require 'thread'
 
-require './lib/orb'
+require './lib/level/orb'
 
 class Lane
     ORB_SIZE = 20
@@ -18,15 +18,11 @@ class Lane
         @zone_color = Gosu::Color.argb(255, 50, 168, 141)
     end
 
-    def add_orb(length, _type)
-        @orbs << Orb.new(@start_x, @start_y, @end_x, @end_y, ORB_SIZE, @bpm, length)
-    end
-
     def button_down
         @zone_color = Gosu::Color.argb(255, 168, 50, 50)
 
-        @threads = []
-        @threads << Thread.new do
+        threads = []
+        threads << Thread.new do
             sleep(0.1)
             @zone_color = Gosu::Color.argb(255, 50, 168, 141)
         end
@@ -42,7 +38,6 @@ class Lane
         @orbs.each_with_index do |orb, i|
             if orb.update(delta_time) 
                 @orbs.delete_at(i)
-                @orbs << Orb.new(@start_x, @start_y, @end_x, @end_y, ORB_SIZE, @bpm, 1)
             end
         end
     end
@@ -55,5 +50,13 @@ class Lane
         @orbs.each do |orb|
             orb.draw
         end
+    end
+
+    def add_orb(length, _type)
+        @orbs << Orb.new(@start_x, @start_y, @end_x, @end_y, ORB_SIZE, @bpm, length)
+    end
+
+    def has_orbs
+        @orbs.length > 0
     end
 end

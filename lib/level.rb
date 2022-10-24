@@ -1,4 +1,5 @@
-require './lib/data'
+require './lib/level/lane'
+require './lib/level/end_card'
 
 OrbData = Struct.new(:delta_time, :length, :lane, :type)
 
@@ -18,11 +19,16 @@ class Level
             orb_data = orb.split(" ")
             OrbData.new(orb_data[0].to_f, orb_data[1].to_f, orb_data[2].to_i, orb_data[3].to_i)
         end
+
+        @ended = false
     end
 end
 
 class LevelManager
     def initialize(level, width, height)
+        @width = width
+        @height = height
+
         @level = Level.new(level)
         @last_event = 0
         @current_orb = 0
@@ -33,6 +39,11 @@ class LevelManager
         @lanes << Lane.new(50, height * 2.0/5.0, width - 2 * 50, height * 2.0/5.0, @level.bpm)
         @lanes << Lane.new(50, height * 3.0/5.0, width - 2 * 50, height * 3.0/5.0, @level.bpm)
         @lanes << Lane.new(50, height * 4.0/5.0, width - 2 * 50, height * 4.0/5.0, @level.bpm)
+
+        @ended = false
+
+        @end_modal = EndCard.new(width, height)
+
     end
 
     def button_down(id)
@@ -63,16 +74,27 @@ class LevelManager
                     @current_orb += 1
                 end
             end
+        else
+            if @lanes.all? { |lane| !lane.has_orbs }
+                @ended = true
+                @end_modal.make_visible
+            end
         end
 
-        @lanes.each do |lane|
-            lane.update(delta_time)
+        if !@ended
+            @lanes.each do |lane|
+                lane.update(delta_time)
+            end
         end
     end
 
     def draw
         @lanes.each do |lane|
             lane.draw
+        end
+
+        if @ended
+            @end_modal.draw
         end
     end
 end

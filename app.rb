@@ -1,7 +1,6 @@
 require 'gosu'
 require 'debug'
 
-require './lib/lane'
 require './lib/level'
 
 class GameWindow < Gosu::Window
