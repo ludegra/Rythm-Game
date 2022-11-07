@@ -7,8 +7,8 @@ class EndCard < Modal
     def initialize(scr_width, scr_height)
         width = scr_width * WIDTH_PERCENTAGE
         height = scr_height * HEIGHT_PERCENTAGE
-        cx = width / 2
-        cy = height / 2
+        cx = scr_width / 2
+        cy = scr_height / 2
 
         super(cx - width / 2, cy - height / 2, width, height, scr_width, scr_height)
     end

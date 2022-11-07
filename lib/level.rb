@@ -77,7 +77,7 @@ class LevelManager
         else
             if @lanes.all? { |lane| !lane.has_orbs }
                 @ended = true
-                @end_modal.make_visible
+                @end_modal.fade_in(3000)
             end
         end
 
@@ -86,12 +86,20 @@ class LevelManager
                 lane.update(delta_time)
             end
         end
+
+        @end_modal.update(delta_time)
     end
 
     def draw
         @lanes.each do |lane|
             lane.draw
         end
+
+        font = Gosu::Font.new(20)
+        font.draw_text("W", 50, 600 * 1.0/5.0, 1, 1, 1, Gosu::Color::WHITE)
+        font.draw_text("A", 50, 600 * 2.0/5.0, 1, 1, 1, Gosu::Color::WHITE)
+        font.draw_text("S", 50, 600 * 3.0/5.0, 1, 1, 1, Gosu::Color::WHITE)
+        font.draw_text("D", 50, 600 * 4.0/5.0, 1, 1, 1, Gosu::Color::WHITE)
 
         if @ended
             @end_modal.draw

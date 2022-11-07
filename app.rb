@@ -2,6 +2,7 @@ require 'gosu'
 require 'debug'
 
 require './lib/level'
+require './lib/constants'
 
 class GameWindow < Gosu::Window
     def initialize(width=800, height=600, fullscreen=false)
@@ -12,8 +13,6 @@ class GameWindow < Gosu::Window
 
 
         @last = Gosu.milliseconds
-
-        @font = Gosu::Font.new(20)
     end
 
     private
@@ -30,12 +29,7 @@ class GameWindow < Gosu::Window
     end
     
     def draw
-        Gosu.draw_rect(0, 0, 800, 600, Gosu::Color.argb(255, 50, 168, 141))
-
-        @font.draw_text("W", 50, 600 * 1.0/5.0, 1, 1, 1, Gosu::Color::WHITE)
-        @font.draw_text("A", 50, 600 * 2.0/5.0, 1, 1, 1, Gosu::Color::WHITE)
-        @font.draw_text("S", 50, 600 * 3.0/5.0, 1, 1, 1, Gosu::Color::WHITE)
-        @font.draw_text("D", 50, 600 * 4.0/5.0, 1, 1, 1, Gosu::Color::WHITE)
+        Gosu.draw_rect(0, 0, 800, 600, Gosu::Color.argb(255, MAIN_COLOR.r, MAIN_COLOR.g, MAIN_COLOR.b))
         
         @level_mgr.draw
 
