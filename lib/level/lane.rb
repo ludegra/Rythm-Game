@@ -34,9 +34,9 @@ class Lane
         end
     end
         
-    def update(delta_time)
+    def update
         @orbs.each_with_index do |orb, i|
-            if orb.update(delta_time) 
+            if orb.update 
                 @orbs.delete_at(i)
             end
         end

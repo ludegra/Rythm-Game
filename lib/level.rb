@@ -1,3 +1,5 @@
+require './lib/scene'
+
 require './lib/level/lane'
 require './lib/level/end_card'
 
@@ -24,14 +26,12 @@ class Level
     end
 end
 
-class LevelManager
+class LevelManager < Scene
     def initialize(level, width, height)
         @width = width
         @height = height
 
         @level = Level.new(level)
-        @last_event = 0
-        @current_orb = 0
 
         @lanes = []
 
@@ -40,14 +40,22 @@ class LevelManager
         @lanes << Lane.new(50, height * 3.0/5.0, width - 2 * 50, height * 3.0/5.0, @level.bpm)
         @lanes << Lane.new(50, height * 4.0/5.0, width - 2 * 50, height * 4.0/5.0, @level.bpm)
 
-        @ended = false
-
         @end_modal = EndCard.new(width, height)
 
+        super()
+    end
+
+    def wake
+        @last_event = 0
+        @current_orb = 0
+        
+        @ended = false
+        
+        @level_time = Time.now
     end
 
     def button_down(id)
-        index = case id
+        lane_index = case id
         when Gosu::KB_W
             0
         when Gosu::KB_A
@@ -58,12 +66,13 @@ class LevelManager
             3
         end
 
-        @lanes[index].button_down if !index.nil?
+        @lanes[lane_index].button_down if !lane_index.nil?
+        @end_modal.button_down(id) if @ended
     end
 
-    def update(delta_time)
+    def update
         if !@current_orb.nil?
-            time = Gosu.milliseconds
+            time = Time.since(@level_time)
             if time - @last_event > @level.orbs[@current_orb].delta_time
                 @lanes[@level.orbs[@current_orb].lane].add_orb(@level.orbs[@current_orb].length, @level.orbs[@current_orb].type)
     
@@ -75,19 +84,19 @@ class LevelManager
                 end
             end
         else
-            if @lanes.all? { |lane| !lane.has_orbs }
+            if @lanes.all? { |lane| !lane.has_orbs } && !@ended
                 @ended = true
-                @end_modal.fade_in(3000)
+                @end_modal.fade_in(500)
             end
         end
 
         if !@ended
             @lanes.each do |lane|
-                lane.update(delta_time)
+                lane.update
             end
         end
 
-        @end_modal.update(delta_time)
+        @end_modal.update if @ended
     end
 
     def draw

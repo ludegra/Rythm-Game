@@ -14,6 +14,7 @@ class Modal
         @border_width = 1
         @animation = nil
         @opacity = 1
+        @t = 0
     end
 
     attr_accessor :border_width
@@ -33,18 +34,25 @@ class Modal
         @duration = duration
         @opacity = 0
 
-        @animation = Proc.new do |delta_time|
-            @t += (duration * delta_time)
-            @opacity = @t
+        @animation = -> () do
+            t = Time.delta_time * 1.0 / @duration
+            @opacity = t
 
-            @t >= 1
+            t
         end
     end
 
-    def update(delta_time)
-        if !@animation.nil?	
-            p "hej"
-            @animation = nil if @animation.call(delta_time)
+    def update
+        if !@animation.nil?
+            @t += @animation.call
+            @opacity = @t
+
+            if @t >= 1
+                @t = 0
+                @opacity = 1
+                @animation = nil
+            end
+            
         end
     end
 

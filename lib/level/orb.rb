@@ -18,8 +18,8 @@ class Orb
         @t = 0
     end
 
-    def update(delta_time)
-        @t += delta_time.to_f / @time
+    def update
+        @t += Time.delta_time.to_f / @time
         if @t >= 1.1
             return true
         end 
