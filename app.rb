@@ -11,15 +11,14 @@ class GameWindow < Gosu::Window
     def initialize(width=800, height=600, fullscreen=false)
         super(width, height, fullscreen)
         self.caption = "Rhythm Game"
-
-        level_manager = LevelManager.new(File.read("./assets/levels/test.lvl"), width, height)
+            
         menu_manager = MenuManager.new()
-        @scene_manager = SceneManager.new({:level => level_manager, :menu => menu_manager})
+        @scene_manager = SceneManager.new({:menu => menu_manager})
         @scene_manager.switch(:menu)
     end
 
-    def switch_scene(scene)
-        @scene_manager.switch(scene)
+    def switch_scene(scene, *args)
+        @scene_manager.switch(scene, args)
     end
 
     private

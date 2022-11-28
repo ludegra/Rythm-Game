@@ -1,10 +1,21 @@
+require './lib/level'
+
 class SceneManager
     def initialize(scenes)
         @scenes = scenes
         @current_scene = nil
     end
 
-    def switch(scene_id)
+    def load_level(level)
+        level_manager = LevelManager.new(File.read("./assets/levels/#{level}.lvl"), 800, 600)
+        @scenes[:level] = level_manager
+    end
+
+    def switch(scene_id, *args)
+        if scene_id == :level
+            load_level(args[0][0])
+        end
+
         @current_scene = @scenes[scene_id]
         @current_scene.wake
     end

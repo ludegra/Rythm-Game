@@ -26,7 +26,7 @@ class Level
     end
 end
 
-class LevelManager < Scene
+class LevelManager
     def initialize(level, width, height)
         @width = width
         @height = height
